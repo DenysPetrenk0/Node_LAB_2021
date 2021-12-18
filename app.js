@@ -49,30 +49,51 @@ var Administrators = /** @class */ (function (_super) {
     function Administrators(userFirstName, userSecondName, userAge, userGender) {
         return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
     }
+    Administrators.prototype.setAccess = function (value) {
+        this.access = value;
+        return this;
+    };
     return Administrators;
 }(User));
 var Teacher = /** @class */ (function (_super) {
     __extends(Teacher, _super);
-    function Teacher(userFirstName, userSecondName, userAge, userGender, faculty, studentCourse) {
-        var _this = _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
-        _this.course = studentCourse;
-        _this.faculty = faculty;
-        return _this;
+    function Teacher(userFirstName, userSecondName, userAge, userGender) {
+        return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
     }
+    Teacher.prototype.setSpecialization = function (value) {
+        this.specialization = value;
+        return this;
+    };
+    Teacher.prototype.setGrade = function (value) {
+        this.grade = value;
+        return this;
+    };
     return Teacher;
 }(User));
 var Student = /** @class */ (function (_super) {
     __extends(Student, _super);
-    function Student(userFirstName, userSecondName, userAge, userGender, faculty, studentCourse) {
-        var _this = _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
-        _this.course = studentCourse;
-        _this.faculty = faculty;
-        return _this;
+    function Student(userFirstName, userSecondName, userAge, userGender) {
+        return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
     }
+    Student.prototype.setFaculty = function (value) {
+        this.faculty = value;
+        return this;
+    };
+    Student.prototype.setCourse = function (value) {
+        this.course = value;
+        return this;
+    };
     return Student;
 }(User));
 var admin = new Administrators("Sdfd", "Sdfdf", 123, "female");
+admin.setAccess('access');
 admin.addUser();
-var student = new Student("Jon", "Fred", 28, "male", 'Electromechanical Engeneering', 4);
+var student = new Student("Jon", "Fred", 28, "male");
+student.setCourse(4);
+student.setFaculty('Electromechanical Engeneering');
 student.addUser();
+var teacher = new Teacher('Name', 'surname', 56, 'female');
+teacher.setGrade('grade');
+teacher.setSpecialization('specialization');
+teacher.addUser();
 console.log(DataBase.getInstance().getUsers());

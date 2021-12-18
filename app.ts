@@ -19,6 +19,11 @@ class DataBase {
     public getUsers(): any {
         return this.users;
     }
+
+    public removeUser(value: string, key: string) {
+        this.users.filter(item => item`.${key}` !== value)
+        return this.users;
+    }
 }
 
 class User {
@@ -45,6 +50,7 @@ class User {
 }
 
 class Administrators extends User {
+    access: string;
 
     constructor(
         userFirstName: string,
@@ -54,26 +60,35 @@ class Administrators extends User {
 
     ) {
         super(userFirstName, userSecondName, userAge, userGender);
+    }
 
+    setAccess(value: string) {
+        this.access = value;
+        return this;
     }
 }
 
 class Teacher extends User {
-    course: number;
-    faculty: string;
+    specialization: string;
+    grade: string;
 
     constructor(
         userFirstName: string,
         userSecondName: string,
         userAge: number,
         userGender: string,
-        faculty: string,
-        studentCourse: number
-
     ) {
         super(userFirstName, userSecondName, userAge, userGender);
-        this.course = studentCourse;
-        this.faculty = faculty;
+    }
+
+    public setSpecialization(value: string) {
+        this.specialization = value;
+        return this;
+    }
+
+    public setGrade(value: string) {
+        this.grade = value;
+        return this;
     }
 }
 
@@ -87,19 +102,33 @@ class Student extends User {
         userSecondName: string,
         userAge: number,
         userGender: string,
-        faculty: string,
-        studentCourse: number
-
     ) {
         super(userFirstName, userSecondName, userAge, userGender);
-        this.course = studentCourse;
-        this.faculty = faculty;
+    }
+
+    public setFaculty(value: string) {
+        this.faculty = value;
+        return this;
+    }
+
+    public setCourse(value: number) {
+        this.course = value;
+        return this;
     }
 }
 
 const admin = new Administrators("Sdfd", "Sdfdf", 123, "female");
-admin.addUser()
-const student = new Student("Jon", "Fred", 28, "male", 'Electromechanical Engeneering', 4);
+admin.setAccess('access');
+admin.addUser();
+
+const student = new Student("Jon", "Fred", 28, "male",);
+student.setCourse(4);
+student.setFaculty('Electromechanical Engeneering')
 student.addUser();
+
+const teacher = new Teacher('Name', 'surname', 56, 'female');
+teacher.setGrade('grade');
+teacher.setSpecialization('specialization');
+teacher.addUser();
 
 console.log(DataBase.getInstance().getUsers());
