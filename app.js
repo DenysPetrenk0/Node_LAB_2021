@@ -30,7 +30,31 @@ var DataBase = /** @class */ (function () {
     DataBase.prototype.getUsers = function () {
         return this.users;
     };
+    DataBase.prototype.removeUser = function (value, key) {
+        this.users.filter(function (item) { return item[key] !== value; });
+        return this.users;
+    };
+    DataBase.prototype.createIterator = function () {
+        return new DataBaseIterator(this);
+    };
     return DataBase;
+}());
+var DataBaseIterator = /** @class */ (function () {
+    function DataBaseIterator(users) {
+        this.users = users;
+        this.position = 0;
+    }
+    DataBaseIterator.prototype.current = function (index) {
+        this.position = index;
+        return this.users.getUsers()[index];
+    };
+    DataBaseIterator.prototype.next = function () {
+        this.position++;
+    };
+    DataBaseIterator.prototype.prev = function () {
+        this.position--;
+    };
+    return DataBaseIterator;
 }());
 var User = /** @class */ (function () {
     function User(userFirstName, userSecondName, userAge, userGender) {
@@ -97,3 +121,6 @@ teacher.setGrade('grade');
 teacher.setSpecialization('specialization');
 teacher.addUser();
 console.log(DataBase.getInstance().getUsers());
+var iterator = DataBase.getInstance().createIterator();
+console.log(iterator);
+console.log(iterator.current(1));

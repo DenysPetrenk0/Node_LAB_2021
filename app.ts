@@ -1,6 +1,6 @@
 /** @format */
 
-class DataBase {
+class DataBase implements DataAggregator {
     private static instance: DataBase;
     private users: any[] = [];
 
@@ -12,17 +12,47 @@ class DataBase {
         return DataBase.instance;
     }
 
-    public addUser(user: any) {
+    public addUser(user: object): void {
         this.users.push(user);
     }
 
-    public getUsers(): any {
+    public getUsers(): object {
         return this.users;
     }
 
-    public removeUser(value: string, key: string) {
-        this.users.filter(item => item`.${key}` !== value)
+    public removeUser(value: string, key: string): object {
+        this.users.filter(item => item[key] !== value)
         return this.users;
+    }
+
+    public createIterator(): DataBaseIterator {
+        return new DataBaseIterator(this)
+    }
+}
+
+interface DataAggregator {
+    addUser(user: object): void;
+    getUsers(): object;
+    removeUser(value: string, key: string): object;
+    createIterator(): DataBaseIterator;
+}
+
+class DataBaseIterator {
+    private position: number = 0;
+
+    constructor(private users: DataAggregator) { }
+
+    public current(index: number): object {
+        this.position = index;
+        return this.users.getUsers()[index];
+    }
+
+    public next(): void {
+        this.position++;
+    }
+
+    public prev(): void {
+        this.position--;
     }
 }
 
@@ -92,7 +122,6 @@ class Teacher extends User {
     }
 }
 
-
 class Student extends User {
     course: number;
     faculty: string;
@@ -132,3 +161,8 @@ teacher.setSpecialization('specialization');
 teacher.addUser();
 
 console.log(DataBase.getInstance().getUsers());
+
+const iterator = DataBase.getInstance().createIterator()
+console.log(iterator);
+console.log(iterator.current(1));
+
