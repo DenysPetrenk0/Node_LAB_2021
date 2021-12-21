@@ -1,8 +1,20 @@
 /** @format */
 
+interface IUser {
+    firstName: string;
+    secondName: string;
+    role: string;
+    age: number;
+    gender: string;
+    isAdmin?: boolean;
+    specialization?: string;
+    course?: number;
+    faculty?: string;
+}
+
 class DataBase implements DataAggregator {
     private static instance: DataBase;
-    private users: any[] = [];
+    private users: IUser = [];
 
     public static getInstance(): DataBase {
         if (!DataBase.instance) {
@@ -12,17 +24,16 @@ class DataBase implements DataAggregator {
         return DataBase.instance;
     }
 
-    public addUser(user: object): void {
+    public addUser(user: IUser): void {
         this.users.push(user);
     }
 
-    public getUsers(): object {
+    public getUsers(): IUser {
         return this.users;
     }
 
-    public removeUser(value: string, key: string): object {
-        this.users.filter(item => item[key] !== value)
-        return this.users;
+    public removeUser(value: string, key: string): IUser {
+        return this.users.filter((item: IUser) => item[key] !== value)
     }
 
     public createIterator(): DataBaseIterator {
@@ -31,10 +42,7 @@ class DataBase implements DataAggregator {
 }
 
 interface DataAggregator {
-    addUser(user: object): void;
     getUsers(): object;
-    removeUser(value: string, key: string): object;
-    createIterator(): DataBaseIterator;
 }
 
 class DataBaseIterator {
@@ -42,7 +50,7 @@ class DataBaseIterator {
 
     constructor(private users: DataAggregator) { }
 
-    public current(index: number): object {
+    public current(index: number = this.position) {
         this.position = index;
         return this.users.getUsers()[index];
     }
@@ -56,60 +64,72 @@ class DataBaseIterator {
     }
 }
 
+class UserBuilder {
+
+    firstName: string;
+    secondName: string;
+    age: number;
+    gender: string;
+    protected role: string
+
+    constructor(role: string) {
+        this.role = role
+    }
+
+    public setFirstName(value: string) {
+        return this.firstName = value;
+    }
+
+    public setSecondName(value: string) {
+        return this.secondName = value;
+    }
+
+    public setAge(value: number) {
+        return this.age = value;
+    }
+
+    public setGender(value: string) {
+        return this.gender = value;
+    }
+
+    public build() {
+        return new User(this)
+    }
+
+    public getUser() {
+        return this;
+    }
+
+}
+
 class User {
+
     firstName: string;
     secondName: string;
     age: number;
     gender: string;
 
-    constructor(
-        userFirstName: string,
-        userSecondName: string,
-        userAge: number,
-        userGender: string
-    ) {
-        this.firstName = userFirstName;
-        this.secondName = userSecondName;
-        this.age = userAge;
-        this.gender = userGender;
-    }
-
-    public addUser() {
-        DataBase.getInstance().addUser(this);
+    constructor(build: UserBuilder) {
+        this.firstName = build.firstName;
+        this.secondName = build.secondName;
+        this.age = build.age;
+        this.gender = build.gender;
     }
 }
 
-class Administrators extends User {
-    access: string;
+class Admin extends UserBuilder {
 
-    constructor(
-        userFirstName: string,
-        userSecondName: string,
-        userAge: number,
-        userGender: string,
+    isAdmin: boolean
 
-    ) {
-        super(userFirstName, userSecondName, userAge, userGender);
-    }
-
-    setAccess(value: string) {
-        this.access = value;
-        return this;
+    public setAdmin(isAdmin: boolean) {
+        this.isAdmin = isAdmin
     }
 }
 
-class Teacher extends User {
+class Teacher extends UserBuilder {
+
     specialization: string;
     grade: string;
-
-    constructor(
-        userFirstName: string,
-        userSecondName: string,
-        userAge: number,
-        userGender: string,
-    ) {
-        super(userFirstName, userSecondName, userAge, userGender);
-    }
 
     public setSpecialization(value: string) {
         this.specialization = value;
@@ -122,18 +142,10 @@ class Teacher extends User {
     }
 }
 
-class Student extends User {
+class Student extends UserBuilder {
+
     course: number;
     faculty: string;
-
-    constructor(
-        userFirstName: string,
-        userSecondName: string,
-        userAge: number,
-        userGender: string,
-    ) {
-        super(userFirstName, userSecondName, userAge, userGender);
-    }
 
     public setFaculty(value: string) {
         this.faculty = value;
@@ -146,23 +158,45 @@ class Student extends User {
     }
 }
 
-const admin = new Administrators("Sdfd", "Sdfdf", 123, "female");
-admin.setAccess('access');
-admin.addUser();
 
-const student = new Student("Jon", "Fred", 28, "male",);
-student.setCourse(4);
-student.setFaculty('Electromechanical Engeneering')
-student.addUser();
+const admin = new Admin('admin');
+admin.setFirstName('KJHKYJ');
+admin.setSecondName('IYIYIIII');
+admin.setAge(25);
+admin.setGender('male');
+admin.setAdmin(true)
+admin.build();
+const addAdmin = admin.getUser();
+DataBase.getInstance().addUser(addAdmin);
 
-const teacher = new Teacher('Name', 'surname', 56, 'female');
+const teacher = new Teacher('teacher');
+teacher.setFirstName('asdasdasdasd');
+teacher.setSecondName('asdadasdasdas');
+teacher.setAge(25);
+teacher.setGender('male');
 teacher.setGrade('grade');
 teacher.setSpecialization('specialization');
-teacher.addUser();
+teacher.build();
+const addTeacher = teacher.getUser();
+DataBase.getInstance().addUser(addTeacher);
+
+const student = new Student("student");
+student.setFirstName('p[o[o');
+student.setSecondName('qqq');
+student.setAge(44);
+student.setGender('male');
+student.setCourse(4);
+student.setFaculty('Electromechanical Engeneering')
+student.build();
+const addStudent = student.getUser();
+DataBase.getInstance().addUser(addStudent);
 
 console.log(DataBase.getInstance().getUsers());
+console.log(DataBase.getInstance().removeUser('qqq', 'secondName'));
+
 
 const iterator = DataBase.getInstance().createIterator()
-console.log(iterator);
-console.log(iterator.current(1));
+console.log(iterator.current());
+iterator.next()
+console.log(iterator.current());
 

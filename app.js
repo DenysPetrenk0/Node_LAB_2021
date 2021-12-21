@@ -1,126 +1,132 @@
+"use strict";
 /** @format */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var DataBase = /** @class */ (function () {
-    function DataBase() {
+class DataBase {
+    constructor() {
         this.users = [];
     }
-    DataBase.getInstance = function () {
+    static getInstance() {
         if (!DataBase.instance) {
             DataBase.instance = new DataBase();
         }
         return DataBase.instance;
-    };
-    DataBase.prototype.addUser = function (user) {
+    }
+    addUser(user) {
         this.users.push(user);
-    };
-    DataBase.prototype.getUsers = function () {
+    }
+    getUsers() {
         return this.users;
-    };
-    DataBase.prototype.removeUser = function (value, key) {
-        this.users.filter(function (item) { return item[key] !== value; });
-        return this.users;
-    };
-    DataBase.prototype.createIterator = function () {
+    }
+    removeUser(value, key) {
+        return this.users.filter((item) => item[key] !== value);
+    }
+    createIterator() {
         return new DataBaseIterator(this);
-    };
-    return DataBase;
-}());
-var DataBaseIterator = /** @class */ (function () {
-    function DataBaseIterator(users) {
+    }
+}
+class DataBaseIterator {
+    constructor(users) {
         this.users = users;
         this.position = 0;
     }
-    DataBaseIterator.prototype.current = function (index) {
+    current(index = this.position) {
         this.position = index;
         return this.users.getUsers()[index];
-    };
-    DataBaseIterator.prototype.next = function () {
+    }
+    next() {
         this.position++;
-    };
-    DataBaseIterator.prototype.prev = function () {
+    }
+    prev() {
         this.position--;
-    };
-    return DataBaseIterator;
-}());
-var User = /** @class */ (function () {
-    function User(userFirstName, userSecondName, userAge, userGender) {
-        this.firstName = userFirstName;
-        this.secondName = userSecondName;
-        this.age = userAge;
-        this.gender = userGender;
     }
-    User.prototype.addUser = function () {
-        DataBase.getInstance().addUser(this);
-    };
-    return User;
-}());
-var Administrators = /** @class */ (function (_super) {
-    __extends(Administrators, _super);
-    function Administrators(userFirstName, userSecondName, userAge, userGender) {
-        return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
+}
+class UserBuilder {
+    constructor(role) {
+        this.role = role;
     }
-    Administrators.prototype.setAccess = function (value) {
-        this.access = value;
+    setFirstName(value) {
+        return this.firstName = value;
+    }
+    setSecondName(value) {
+        return this.secondName = value;
+    }
+    setAge(value) {
+        return this.age = value;
+    }
+    setGender(value) {
+        return this.gender = value;
+    }
+    build() {
+        return new User(this);
+    }
+    getUser() {
         return this;
-    };
-    return Administrators;
-}(User));
-var Teacher = /** @class */ (function (_super) {
-    __extends(Teacher, _super);
-    function Teacher(userFirstName, userSecondName, userAge, userGender) {
-        return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
     }
-    Teacher.prototype.setSpecialization = function (value) {
+}
+class User {
+    constructor(build) {
+        this.firstName = build.firstName;
+        this.secondName = build.secondName;
+        this.age = build.age;
+        this.gender = build.gender;
+    }
+}
+class Admin extends UserBuilder {
+    setAdmin(isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+}
+class Teacher extends UserBuilder {
+    setSpecialization(value) {
         this.specialization = value;
         return this;
-    };
-    Teacher.prototype.setGrade = function (value) {
+    }
+    setGrade(value) {
         this.grade = value;
         return this;
-    };
-    return Teacher;
-}(User));
-var Student = /** @class */ (function (_super) {
-    __extends(Student, _super);
-    function Student(userFirstName, userSecondName, userAge, userGender) {
-        return _super.call(this, userFirstName, userSecondName, userAge, userGender) || this;
     }
-    Student.prototype.setFaculty = function (value) {
+}
+class Student extends UserBuilder {
+    setFaculty(value) {
         this.faculty = value;
         return this;
-    };
-    Student.prototype.setCourse = function (value) {
+    }
+    setCourse(value) {
         this.course = value;
         return this;
-    };
-    return Student;
-}(User));
-var admin = new Administrators("Sdfd", "Sdfdf", 123, "female");
-admin.setAccess('access');
-admin.addUser();
-var student = new Student("Jon", "Fred", 28, "male");
-student.setCourse(4);
-student.setFaculty('Electromechanical Engeneering');
-student.addUser();
-var teacher = new Teacher('Name', 'surname', 56, 'female');
+    }
+}
+const admin = new Admin('admin');
+admin.setFirstName('KJHKYJ');
+admin.setSecondName('IYIYIIII');
+admin.setAge(25);
+admin.setGender('male');
+admin.setAdmin(true);
+admin.build();
+const addAdmin = admin.getUser();
+DataBase.getInstance().addUser(addAdmin);
+const teacher = new Teacher('teacher');
+teacher.setFirstName('asdasdasdasd');
+teacher.setSecondName('asdadasdasdas');
+teacher.setAge(25);
+teacher.setGender('male');
 teacher.setGrade('grade');
 teacher.setSpecialization('specialization');
-teacher.addUser();
+teacher.build();
+const addTeacher = teacher.getUser();
+DataBase.getInstance().addUser(addTeacher);
+const student = new Student("student");
+student.setFirstName('p[o[o');
+student.setSecondName('qqq');
+student.setAge(44);
+student.setGender('male');
+student.setCourse(4);
+student.setFaculty('Electromechanical Engeneering');
+student.build();
+const addStudent = student.getUser();
+DataBase.getInstance().addUser(addStudent);
 console.log(DataBase.getInstance().getUsers());
-var iterator = DataBase.getInstance().createIterator();
-console.log(iterator);
-console.log(iterator.current(1));
+console.log(DataBase.getInstance().removeUser('qqq', 'secondName'));
+const iterator = DataBase.getInstance().createIterator();
+console.log(iterator.current());
+iterator.next();
+console.log(iterator.current());
