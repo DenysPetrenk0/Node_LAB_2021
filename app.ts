@@ -5,6 +5,7 @@ interface IUser {
     secondName: string;
     age: number;
     gender: string;
+    role: string;
     isAdmin?: boolean;
     specialization?: string;
     course?: number;
@@ -69,8 +70,6 @@ class DataBaseIterator {
 
 class UserBuilder {
 
-    user: IUser;
-
     constructor(role: string) {
         this.role = role
     }
@@ -109,10 +108,10 @@ class User implements IUser {
     gender: string;
 
     constructor(build: UserBuilder) {
-        this.firstName = build.user.firstName;
-        this.secondName = build.user.secondName;
-        this.age = build.user.age;
-        this.gender = build.user.gender;
+        this.firstName = build.firstName;
+        this.secondName = build.secondName;
+        this.age = build.age;
+        this.gender = build.gender;
     }
 }
 
@@ -163,7 +162,7 @@ admin.setFirstName('KJHKYJ');
 admin.setSecondName('IYIYIIII');
 admin.setAge(25);
 admin.setGender('male');
-admin.setAdmin(true)
+admin.setAdmin(true);
 const addAdmin = admin.getUser();
 DataBase.getInstance().addUser(addAdmin);
 
