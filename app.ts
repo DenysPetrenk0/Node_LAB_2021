@@ -3,7 +3,6 @@
 interface IUser {
     firstName: string;
     secondName: string;
-    role: string;
     age: number;
     gender: string;
     isAdmin?: boolean;
@@ -14,7 +13,7 @@ interface IUser {
 
 class DataBase implements DataAggregator {
     private static instance: DataBase;
-    private users: IUser = [];
+    private users: IUser[] = [];
 
     public static getInstance(): DataBase {
         if (!DataBase.instance) {
@@ -28,12 +27,12 @@ class DataBase implements DataAggregator {
         this.users.push(user);
     }
 
-    public getUsers(): IUser {
+    public getUsers(): IUser[] {
         return this.users;
     }
 
-    public removeUser(value: string, key: string): IUser {
-        return this.users.filter((item: IUser) => item[key] !== value)
+    public removeUser(value: string, key: string): IUser[] {
+        return this.users = this.users.filter((item: IUser) => item[key] !== value)
     }
 
     public createIterator(): DataBaseIterator {
@@ -42,7 +41,7 @@ class DataBase implements DataAggregator {
 }
 
 interface DataAggregator {
-    getUsers(): object;
+    getUsers(): IUser[];
 }
 
 class DataBaseIterator {
@@ -55,7 +54,7 @@ class DataBaseIterator {
         return this.users.getUsers()[index];
     }
 
-    public dataLenght() {
+    public getUsers() {
         return this.users.getUsers()
     }
 
@@ -70,11 +69,7 @@ class DataBaseIterator {
 
 class UserBuilder {
 
-    firstName: string;
-    secondName: string;
-    age: number;
-    gender: string;
-    protected role: string
+    user: IUser;
 
     constructor(role: string) {
         this.role = role
@@ -106,7 +101,7 @@ class UserBuilder {
 
 }
 
-class User {
+class User implements IUser {
 
     firstName: string;
     secondName: string;
@@ -114,14 +109,14 @@ class User {
     gender: string;
 
     constructor(build: UserBuilder) {
-        this.firstName = build.firstName;
-        this.secondName = build.secondName;
-        this.age = build.age;
-        this.gender = build.gender;
+        this.firstName = build.user.firstName;
+        this.secondName = build.user.secondName;
+        this.age = build.user.age;
+        this.gender = build.user.gender;
     }
 }
 
-class Admin extends UserBuilder {
+class AdminUserBuilder extends UserBuilder {
 
     isAdmin: boolean
 
@@ -130,7 +125,7 @@ class Admin extends UserBuilder {
     }
 }
 
-class Teacher extends UserBuilder {
+class TeacherUserBuilder extends UserBuilder {
 
     specialization: string;
     grade: string;
@@ -146,7 +141,7 @@ class Teacher extends UserBuilder {
     }
 }
 
-class Student extends UserBuilder {
+class StudentUserBuilder extends UserBuilder {
 
     course: number;
     faculty: string;
@@ -163,45 +158,44 @@ class Student extends UserBuilder {
 }
 
 
-const admin = new Admin('admin');
+const admin = new AdminUserBuilder('admin');
 admin.setFirstName('KJHKYJ');
 admin.setSecondName('IYIYIIII');
 admin.setAge(25);
 admin.setGender('male');
 admin.setAdmin(true)
-admin.build();
 const addAdmin = admin.getUser();
 DataBase.getInstance().addUser(addAdmin);
 
-const teacher = new Teacher('teacher');
+
+const teacher = new TeacherUserBuilder('teacher');
 teacher.setFirstName('asdasdasdasd');
 teacher.setSecondName('asdadasdasdas');
 teacher.setAge(25);
 teacher.setGender('male');
 teacher.setGrade('grade');
 teacher.setSpecialization('specialization');
-teacher.build();
 const addTeacher = teacher.getUser();
 DataBase.getInstance().addUser(addTeacher);
 
-const student = new Student("student");
+const student = new StudentUserBuilder("student");
 student.setFirstName('p[o[o');
 student.setSecondName('qqq');
 student.setAge(44);
 student.setGender('male');
 student.setCourse(4);
 student.setFaculty('Electromechanical Engeneering')
-student.build();
 const addStudent = student.getUser();
 DataBase.getInstance().addUser(addStudent);
 
 console.log(DataBase.getInstance().getUsers());
-// console.log(DataBase.getInstance().removeUser('qqq', 'secondName'));
-
+DataBase.getInstance().removeUser('qqq', 'secondName')
+console.log(DataBase.getInstance().getUsers());
 
 const iterator = DataBase.getInstance().createIterator()
 
-const dataLength = iterator.dataLenght().length;
+
+const dataLength = iterator.getUsers().length;
 let i = 0;
 while (i < dataLength) {
     let valueData = iterator.current()
