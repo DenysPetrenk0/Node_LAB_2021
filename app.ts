@@ -55,6 +55,10 @@ class DataBaseIterator {
         return this.users.getUsers()[index];
     }
 
+    public dataLenght() {
+        return this.users.getUsers()
+    }
+
     public next(): void {
         this.position++;
     }
@@ -192,11 +196,16 @@ const addStudent = student.getUser();
 DataBase.getInstance().addUser(addStudent);
 
 console.log(DataBase.getInstance().getUsers());
-console.log(DataBase.getInstance().removeUser('qqq', 'secondName'));
+// console.log(DataBase.getInstance().removeUser('qqq', 'secondName'));
 
 
 const iterator = DataBase.getInstance().createIterator()
-console.log(iterator.current());
-iterator.next()
-console.log(iterator.current());
 
+const dataLength = iterator.dataLenght().length;
+let i = 0;
+while (i < dataLength) {
+    let valueData = iterator.current()
+    console.log(valueData.firstName);
+    iterator.next()
+    i++;
+}
