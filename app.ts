@@ -70,32 +70,30 @@ class DataBaseIterator {
 
 class UserBuilder {
 
+    protected user = new User()
+
     constructor(role: string) {
-        this.role = role
+        this.user.role = role
     }
 
     public setFirstName(value: string) {
-        return this.firstName = value;
+        return this.user.firstName = value;
     }
 
     public setSecondName(value: string) {
-        return this.secondName = value;
+        return this.user.secondName = value;
     }
 
     public setAge(value: number) {
-        return this.age = value;
+        return this.user.age = value;
     }
 
     public setGender(value: string) {
-        return this.gender = value;
+        return this.user.gender = value;
     }
 
     public build() {
-        return new User(this)
-    }
-
-    public getUser() {
-        return this;
+        return this.user
     }
 
 }
@@ -106,52 +104,39 @@ class User implements IUser {
     secondName: string;
     age: number;
     gender: string;
+    role: string
 
-    constructor(build: UserBuilder) {
-        this.firstName = build.firstName;
-        this.secondName = build.secondName;
-        this.age = build.age;
-        this.gender = build.gender;
-    }
 }
 
 class AdminUserBuilder extends UserBuilder {
 
-    isAdmin: boolean
-
     public setAdmin(isAdmin: boolean) {
-        this.isAdmin = isAdmin
+        this.user.isAdmin = isAdmin
     }
 }
 
 class TeacherUserBuilder extends UserBuilder {
 
-    specialization: string;
-    grade: string;
-
     public setSpecialization(value: string) {
-        this.specialization = value;
+        this.user.specialization = value;
         return this;
     }
 
     public setGrade(value: string) {
-        this.grade = value;
+        this.user.grade = value;
         return this;
     }
 }
 
 class StudentUserBuilder extends UserBuilder {
 
-    course: number;
-    faculty: string;
-
     public setFaculty(value: string) {
-        this.faculty = value;
+        this.user.faculty = value;
         return this;
     }
 
     public setCourse(value: number) {
-        this.course = value;
+        this.user.course = value;
         return this;
     }
 }
@@ -163,9 +148,8 @@ admin.setSecondName('IYIYIIII');
 admin.setAge(25);
 admin.setGender('male');
 admin.setAdmin(true);
-const addAdmin = admin.getUser();
+const addAdmin = admin.build();
 DataBase.getInstance().addUser(addAdmin);
-
 
 const teacher = new TeacherUserBuilder('teacher');
 teacher.setFirstName('asdasdasdasd');
@@ -174,7 +158,7 @@ teacher.setAge(25);
 teacher.setGender('male');
 teacher.setGrade('grade');
 teacher.setSpecialization('specialization');
-const addTeacher = teacher.getUser();
+const addTeacher = teacher.build();
 DataBase.getInstance().addUser(addTeacher);
 
 const student = new StudentUserBuilder("student");
@@ -184,7 +168,7 @@ student.setAge(44);
 student.setGender('male');
 student.setCourse(4);
 student.setFaculty('Electromechanical Engeneering')
-const addStudent = student.getUser();
+const addStudent = student.build();
 DataBase.getInstance().addUser(addStudent);
 
 console.log(DataBase.getInstance().getUsers());
