@@ -1,146 +1,10 @@
 /** @format */
 
-interface IUser {
-    firstName: string;
-    secondName: string;
-    age: number;
-    gender: string;
-    role: string;
-    isAdmin?: boolean;
-    specialization?: string;
-    course?: number;
-    faculty?: string;
-}
-
-class DataBase implements DataAggregator {
-    private static instance: DataBase;
-    private users: IUser[] = [];
-
-    public static getInstance(): DataBase {
-        if (!DataBase.instance) {
-            DataBase.instance = new DataBase();
-        }
-
-        return DataBase.instance;
-    }
-
-    public addUser(user: IUser): void {
-        this.users.push(user);
-    }
-
-    public getUsers(): IUser[] {
-        return this.users;
-    }
-
-    public removeUser(value: string, key: string): IUser[] {
-        return this.users = this.users.filter((item: IUser) => item[key] !== value)
-    }
-
-    public createIterator(): DataBaseIterator {
-        return new DataBaseIterator(this)
-    }
-}
-
-interface DataAggregator {
-    getUsers(): IUser[];
-}
-
-class DataBaseIterator {
-    private position: number = 0;
-
-    constructor(private users: DataAggregator) { }
-
-    public current(index: number = this.position) {
-        this.position = index;
-        return this.users.getUsers()[index];
-    }
-
-    public getUsers() {
-        return this.users.getUsers()
-    }
-
-    public next(): void {
-        this.position++;
-    }
-
-    public prev(): void {
-        this.position--;
-    }
-}
-
-class UserBuilder {
-
-    protected user = new User()
-
-    constructor(role: string) {
-        this.user.role = role
-    }
-
-    public setFirstName(value: string) {
-        return this.user.firstName = value;
-    }
-
-    public setSecondName(value: string) {
-        return this.user.secondName = value;
-    }
-
-    public setAge(value: number) {
-        return this.user.age = value;
-    }
-
-    public setGender(value: string) {
-        return this.user.gender = value;
-    }
-
-    public build() {
-        return this.user
-    }
-
-}
-
-class User implements IUser {
-
-    firstName: string;
-    secondName: string;
-    age: number;
-    gender: string;
-    role: string
-
-}
-
-class AdminUserBuilder extends UserBuilder {
-
-    public setAdmin(isAdmin: boolean) {
-        this.user.isAdmin = isAdmin
-    }
-}
-
-class TeacherUserBuilder extends UserBuilder {
-
-    public setSpecialization(value: string) {
-        this.user.specialization = value;
-        return this;
-    }
-
-    public setGrade(value: string) {
-        this.user.grade = value;
-        return this;
-    }
-}
-
-class StudentUserBuilder extends UserBuilder {
-
-    public setFaculty(value: string) {
-        this.user.faculty = value;
-        return this;
-    }
-
-    public setCourse(value: number) {
-        this.user.course = value;
-        return this;
-    }
-}
-
+import DataBase from './dataBase/dataBase';
+import LessonBuilder from './builder/lessonBuilder';
+import TeacherUserBuilder from './user/teacher/teacher';
+import StudentUserBuilder from './user/student/student';
+import AdminUserBuilder from './user/admin/admin';
 
 const admin = new AdminUserBuilder('admin');
 admin.setFirstName('KJHKYJ');
@@ -171,6 +35,8 @@ student.setFaculty('Electromechanical Engeneering')
 const addStudent = student.build();
 DataBase.getInstance().addUser(addStudent);
 
+
+
 console.log(DataBase.getInstance().getUsers());
 DataBase.getInstance().removeUser('qqq', 'secondName')
 console.log(DataBase.getInstance().getUsers());
@@ -186,3 +52,19 @@ while (i < dataLength) {
     iterator.next()
     i++;
 }
+
+const english = new LessonBuilder('English');
+english.setCourse(5);
+english.setTeacher('UIIOOJL KJHK');
+const addEnglish = english.build();
+DataBase.getInstance().createLesson(addEnglish);
+
+const mathem = new LessonBuilder('Mathematics');
+mathem.setCourse(3);
+mathem.setTeacher('OIUO KJHKJ');
+const addMathem = mathem.build();
+DataBase.getInstance().createLesson(addMathem);
+
+console.log(DataBase.getInstance().getLessons());
+DataBase.getInstance().updateLesson('English', 'teacher', 'UUU UUU');
+console.log(DataBase.getInstance().getLessons());
