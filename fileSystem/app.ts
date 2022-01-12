@@ -1,38 +1,41 @@
-const fs = require("fs/promises");
+const fs = require("fs");
 const path = require("path");
 
 import LessonBuilder from "../builder/lessonBuilder";
 import DataBase from "../dataBase/dataBase";
 
 
-const filePath: string = path.join(__dirname, "./csv.txt");
+const filePath: string = path.join(__dirname, "./file.csv");
 
-function getFilePath(): string {
-    try {
-        const data = fs.readFileSync(filePath);
-        return data.toString();
-    } catch (error) {
-        console.log(error.message);
-        throw error;
+function getFile(): void {
+  fs.readFile(filePath, "utf8", function (error, data) {
+    if (error) {
+      throw error;
     }
+    const dataArr: Array<string> = data.split(/\r?\n/);
+    checkFile(dataArr);
+  });
 }
 
-function checkFile() {
-    try {
-        const result: string = getFilePath();
-        if (result.includes("name" && "course" && "lecture" && "date")) {
-            return result;
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
+function checkFile(array: Array<string>) {
+  if (
+    array.length > 10 &&
+    array[0].includes("name" && "course" && "lecture" && "date")
+  ) {
+    array.forEach((element) => {
+      const value = element.split(";");
+      addLesson(value);
+    });
+  }
 }
 
-function addLesson() {
-    const result = checkFile();
-    const newLesson = new LessonBuilder(result.name);
-    newLesson.setCourse(result.course);
-    newLesson.setTeacher(result.lecture);
-    newLesson.build();
-    DataBase.getInstance().getLessons();
+function addLesson(array: Array<string>) {
+  const newLesson = new LessonBuilder(array[0]);
+  const course = Number(array[1])
+  newLesson.setCourse(course);
+  newLesson.setTeacher(array[2]);
+  newLesson.build();
+  DataBase.getInstance().getLessons();
 }
+
+getFile();
