@@ -1,4 +1,4 @@
-import Lesson from "../lesson/lesson";
+import Lesson from "../model/lesson/lesson";
 
 export default class LessonBuilder {
 

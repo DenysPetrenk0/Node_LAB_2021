@@ -1,7 +1,7 @@
 import DataAggregator from '../iterator/interface';
 import DataBaseIterator from '../iterator/iterator'
-import IUser from '../user/interfase';
-import ILesson from '../lesson/interface';
+import IUser from '../model/interfase';
+import ILesson from '../model/lesson/interface';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class DataBase implements DataAggregator {

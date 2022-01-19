@@ -1,4 +1,4 @@
-import IUser from '../user/interfase';
+import IUser from '../model/interfase';
 import DataAggregator from './interface'
 
 export default class DataBaseIterator {

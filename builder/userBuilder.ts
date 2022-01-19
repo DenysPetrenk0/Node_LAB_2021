@@ -1,4 +1,4 @@
-import User from '../user/user';
+import User from '../model/user';
 
 export default class UserBuilder {
 

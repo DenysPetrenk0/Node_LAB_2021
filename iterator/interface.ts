@@ -1,4 +1,4 @@
-import IUser from "../user/interfase";
+import IUser from "../model/interfase";
 
 export default interface DataAggregator {
     getUsers(): IUser[];

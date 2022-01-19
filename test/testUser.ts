@@ -1,4 +1,4 @@
-import AdminUserBuilder from "../user/admin/admin";
+import AdminUserBuilder from "../model/admin/admin";
 
 export const testUser = new AdminUserBuilder('test');
 testUser.setFirstName('test');
