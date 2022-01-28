@@ -1,23 +1,24 @@
-const express = require("express");
-const cors = require("cors");
+import express, { Request, Response } from "express";
+import cors from "cors";
 
-const userRouter = require("./routes/api/user");
-const lessonRouter = require("./routes/api/lesson");
+const usersRouter = require("./routes/api/users.router");
+const lessonsRouter = require("./routes/api/lessons.router");
+
 const app = express();
-
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/user", userRouter);
-app.use("/api/lesson", lessonRouter)
 
-app.use((req, res) => {
-    res.status(404).json({ message: "Not found" });
+app.use("/api/users", usersRouter);
+app.use("/api/lessons", lessonsRouter);
+
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ message: "Not found" });
 });
 
-app.use((err, req, res, next) => {
-    const { status = 500, message = "Server error" } = err;
-    res.status(status).json({ message });
+app.use((err: any, req: Request, res: Response, next: any) => {
+  const { status = 500, message = "Server error" } = err;
+  res.status(status).json({ message });
 });
 
 module.exports = app;
